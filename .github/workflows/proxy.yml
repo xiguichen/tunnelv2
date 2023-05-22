@@ -27,6 +27,6 @@ jobs:
         with:
           dotnet-version: '6.0.x'
       - name: proxy
-        run: python proxy_server.py
+        run: python proxy_server.py &
       - name: client
         run: dotnet run --project client
