@@ -28,5 +28,7 @@ jobs:
           dotnet-version: '6.0.x'
       - name: proxy
         run: python proxy_server.py &
+      - name: curl
+        run: curl https://7i240740g5.goho.co/swagger/index.html
       - name: client
         run: dotnet run --project client -- --ws-url ${{ github.event.inputs.websocket_url }}
