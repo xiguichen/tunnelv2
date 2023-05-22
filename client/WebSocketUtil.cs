@@ -11,11 +11,14 @@ namespace client
     public class WebSocketUtil
     {
         // 创建WebSocket连接
-        public static HubConnection CreateHubConnection()
+        public static HubConnection CreateHubConnection(string wsUrl)
         {
+            if(string.IsNullOrEmpty(wsUrl))
+            {
+                wsUrl = "http://localhost:5237/TcpHub";
+            }
             return new HubConnectionBuilder()
-                .WithUrl("http://localhost:5237/TcpHub")
-                //.WithUrl("https://7i240740g5.goho.co/TcpHub")
+                .WithUrl(wsUrl)
                 .Build();
         }
 
