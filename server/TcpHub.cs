@@ -10,31 +10,20 @@ namespace server
         public override Task OnConnectedAsync()
         {
             tokenSource = new CancellationTokenSource();
-            OpenTcpConnection();
+            Console.WriteLine($"Websocket client connected, ConnectionId id: {this.Context.ConnectionId}");
             _ = StartTcpServer(this.Clients.Caller, tokenSource.Token);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            CloseTcpConnection();
+            Console.WriteLine($"Websocket client disconnected, ConnectionId: {this.Context.ConnectionId}");
             if(tokenSource != null)
             {
                 tokenSource.Cancel();
             }
             return base.OnDisconnectedAsync(exception);
         }
-
-        private void OpenTcpConnection()
-        {
-            Console.WriteLine($"Websocket client connected, ConnectionId id: {this.Context.ConnectionId}");
-        }
-
-        private void CloseTcpConnection()
-        {
-            Console.WriteLine($"Websocket client disconnected, ConnectionId: {this.Context.ConnectionId}");
-        }
-
 
         public static async Task StartTcpServer(IClientProxy clientProxy,CancellationToken cancellationToken)
         {
@@ -86,24 +75,30 @@ namespace server
 
         private static async Task Tcp2WebSocket(IClientProxy clientProxy, TcpClient client, string connectionId)
         {
-            NetworkStream stream = client.GetStream();
-            while (true)
+            try
             {
-                byte[] buffer = new byte[1024];
-                int bytesReceived = await stream.ReadAsync(buffer);
-
-                if (bytesReceived == 0)
+                NetworkStream stream = client.GetStream();
+                while (true)
                 {
-                    // TODO: notify server that the client disconnected
-                    await clientProxy.SendAsync("Close").ConfigureAwait(false);
-                    break;
-                    //await Task.Delay(100);
-                    //continue;
-                }
+                    byte[] buffer = new byte[1024];
+                    int bytesReceived = await stream.ReadAsync(buffer);
 
-                // notify server data received
-                Console.WriteLine($"Tcp -> WS (Data) ; Length: {bytesReceived}");
-                await clientProxy.SendAsync("Data", connectionId, buffer, bytesReceived).ConfigureAwait(false);
+                    if (bytesReceived == 0)
+                    {
+                        await Task.Delay(100);
+                        continue;
+                    }
+
+                    // notify server data received
+                    Console.WriteLine($"Tcp -> WS (Data) ; Length: {bytesReceived}");
+                    await clientProxy.SendAsync("Data", connectionId, buffer, bytesReceived).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Got exception {e} when receive TCP data");
+                Console.WriteLine("Tcp -> WS (Close)");
+                await clientProxy.SendAsync("Close").ConfigureAwait(false);
             }
         }
 

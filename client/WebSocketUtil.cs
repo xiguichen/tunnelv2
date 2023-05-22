@@ -28,6 +28,7 @@ namespace client
                 var client = new TcpClient();
                 await client.ConnectAsync("127.0.0.1", _portId);
                 _tcpClientDict.Add(connectionId, client);
+                _ = HandleSocketData(client, hubConnection, connectionId);
             });
         }
 
@@ -39,31 +40,41 @@ namespace client
                 var client = _tcpClientDict[connectionId];
                 var stream = client.GetStream();
                 await stream.WriteAsync(bytes, 0, length);
-                _ = HandleSocketData(client, hubConnection, connectionId);
             });
         }
 
         // 处理从现有的socket中接收数据，并将数据返回给WebSocket连接
         private static async Task HandleSocketData(TcpClient tcpClient, HubConnection hubConnection, string connectionId)
         {
-            NetworkStream stream = tcpClient.GetStream();
-            while (true)
+            try
             {
-                byte[] buffer = new byte[1024];
-                int bytesReceived = await stream.ReadAsync(buffer);
-
-                if (bytesReceived == 0)
+                NetworkStream stream = tcpClient.GetStream();
+                while (true)
                 {
-                    // TODO: notify server that the client disconnected
-                    //await hubConnection.SendAsync("Close", connectionId).ConfigureAwait(false);
-                    //break;
-                    await Task.Delay(100);
-                }
+                    byte[] buffer = new byte[1024 * 16];
+                    int bytesReceived = await stream.ReadAsync(buffer);
 
-                // notify server data received
-                Console.WriteLine("Tcp -> WS");
-                await hubConnection.SendAsync("Data", connectionId, buffer, bytesReceived).ConfigureAwait(false);
+                    if (bytesReceived == 0)
+                    {
+                        // TODO: notify server that the client disconnected
+                        await hubConnection.SendAsync("Close", connectionId).ConfigureAwait(false);
+                        break;
+                        //Console.WriteLine($"No data for connection: {connectionId}, wait 100 ms");
+                        //await Task.Delay(100);
+                        //continue;
+                    }
+
+                    // notify server data received
+                    Console.WriteLine("Tcp -> WS (Data)");
+                    await hubConnection.SendAsync("Data", connectionId, buffer, bytesReceived).ConfigureAwait(false);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Got exception: {e}");
+                Console.WriteLine("TCP -> WS (Close)");
+            }
+            
         }
 
         private static readonly int _portId = 1081;
