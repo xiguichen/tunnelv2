@@ -17,6 +17,7 @@ namespace client
             {
                 wsUrl = "http://localhost:5237/TcpHub";
             }
+            Console.WriteLine($"WsUrl is: {wsUrl}");
             return new HubConnectionBuilder()
                 .WithUrl(wsUrl)
                 .Build();
