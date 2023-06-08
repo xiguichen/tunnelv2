@@ -24,4 +24,4 @@ if __name__ == "__main__":
     byte_count = int(sys.argv[2])
 
     received_bytes = measure_url_performance(base_url, byte_count)
-    print(f"Received {received_bytes} bytes in one second.")
+    print(f"Received {received_bytes} kb in one second.")
