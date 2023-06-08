@@ -5,13 +5,15 @@ import time
 def measure_url_performance(base_url, byte_count):
     url = f"{base_url}/{byte_count}"
     start_time = time.time()
-    received_bytes = 0
+    response = requests.get(url)
+    received_bytes = len(response.content)
+    end_time = time.time()
 
-    while time.time() - start_time < 1:
-        response = requests.get(url)
-        received_bytes += len(response.content)
-
-    return received_bytes
+    time_diff = (int) (end_time - start_time)
+    if time_diff != 0:
+        return (int)(received_bytes / time_diff / 1000)
+    else:
+        return received_bytes / 1000
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
