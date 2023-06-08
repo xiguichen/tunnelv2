@@ -1,0 +1,35 @@
+name: Performance
+
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      url:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'The url to test download speed'
+        # Default value if no value is explicitly provided
+        default: 'https://7i240740g5.goho.co/TcpHub'
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: string
+
+      bytes:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'The url to test download speed'
+        # Default value if no value is explicitly provided
+        default: '10000000'
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: number
+  
+jobs:
+  Performance:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: performance
+        run: python tools/download_performance.py ${{ github.event.inputs.url }} ${{ github.event.inputs.bytes }} 
