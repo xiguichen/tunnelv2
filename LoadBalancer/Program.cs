@@ -4,7 +4,7 @@ using LoadBalancer;
 
 List<string> WsServerList = new()
 {
-    "http://localhost:5081/TcpHub"
+    "https://pencil-cargo-auction-america.trycloudflare.com/TcpHub"
 };
 Server server = new(WsServerList, 10);
 await server.Run(CancellationToken.None);

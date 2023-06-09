@@ -21,10 +21,12 @@ jobs:
           curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
           echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
           sudo apt-get update && sudo apt-get install cloudflared
+      - name: proxy
+        run: python proxy_server.py &  
       - name: cloudflared
         run: |
           cloudflared tunnel --url localhost:5081 2>&1 > cloudflared.txt &
           sleep 10 
           cat cloudflared.txt
-      - name: server
+      - name: WsServer
         run: dotnet run --project WsServer
