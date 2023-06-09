@@ -41,3 +41,4 @@ jobs:
           dotnet run --project WsServer --urls http://localhost:5084 &
           dotnet run --project WsServer --urls http://localhost:5085 &
           dotnet run --project WsServer --urls http://localhost:5086 &
+          sleep 3600
