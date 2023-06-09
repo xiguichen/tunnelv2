@@ -25,8 +25,24 @@ jobs:
         run: python proxy_server.py &  
       - name: cloudflared
         run: |
-          cloudflared tunnel --url localhost:5081 2>&1 > cloudflared.txt &
+          cloudflared tunnel --url localhost:5081 2>&1 > cloudflared1.txt &
+          cloudflared tunnel --url localhost:5082 2>&1 > cloudflared2.txt &
+          cloudflared tunnel --url localhost:5083 2>&1 > cloudflared3.txt &
+          cloudflared tunnel --url localhost:5084 2>&1 > cloudflared4.txt &
+          cloudflared tunnel --url localhost:5085 2>&1 > cloudflared5.txt &
+          cloudflared tunnel --url localhost:5086 2>&1 > cloudflared6.txt &
           sleep 10 
-          cat cloudflared.txt
+          cat cloudflared1.txt | grep "trycloudflare.com"
+          cat cloudflared2.txt | grep "trycloudflare.com"
+          cat cloudflared3.txt | grep "trycloudflare.com"
+          cat cloudflared4.txt | grep "trycloudflare.com"
+          cat cloudflared5.txt | grep "trycloudflare.com"
+          cat cloudflared6.txt | grep "trycloudflare.com"
       - name: WsServer
-        run: dotnet run --project WsServer
+        run: |
+          dotnet run --project WsServer --urls http://localhost:5081 &
+          dotnet run --project WsServer --urls http://localhost:5082 &
+          dotnet run --project WsServer --urls http://localhost:5083 &
+          dotnet run --project WsServer --urls http://localhost:5084 &
+          dotnet run --project WsServer --urls http://localhost:5085 &
+          dotnet run --project WsServer --urls http://localhost:5086 &
