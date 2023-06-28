@@ -69,10 +69,13 @@ internal class Server
 
     private async Task StartWebSockets(CancellationToken cancellationToken)
     {
+
+        var tasks = new List<Task>();
         foreach (var hubConnection in this.hubConnections)
         {
-            await hubConnection.StartAsync(cancellationToken);
+            tasks.Add(hubConnection.StartAsync(cancellationToken));
         }
+        await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
     private static async Task SendConnectRequestAsync(HubConnection hubConnection, string connectionId) => await hubConnection.SendAsync("Connect", connectionId).ConfigureAwait(false);
