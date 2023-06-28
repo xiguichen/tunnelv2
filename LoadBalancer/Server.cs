@@ -78,7 +78,18 @@ internal class Server
         await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
-    private static async Task SendConnectRequestAsync(HubConnection hubConnection, string connectionId) => await hubConnection.SendAsync("Connect", connectionId).ConfigureAwait(false);
+    private static async Task SendConnectRequestAsync(HubConnection hubConnection, string connectionId)
+    {
+        try
+        {
+            await hubConnection.SendAsync("Connect", connectionId).ConfigureAwait(false);
+        }
+        catch (InvalidOperationException e)
+        {
+            await hubConnection.StartAsync();
+            await hubConnection.SendAsync("Connect", connectionId).ConfigureAwait(false);
+        }
+    }
 
     private static async Task SendDataRequestAsync(HubConnection hubConnection, string connectionId, byte[] data) => await hubConnection.SendAsync("Data", connectionId, data).ConfigureAwait(false);
 

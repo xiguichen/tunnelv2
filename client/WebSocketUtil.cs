@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,7 +78,6 @@ namespace client
                 Console.WriteLine($"Got exception: {e}");
                 Console.WriteLine("TCP -> WS (Close)");
             }
-            
         }
 
         private static readonly int _portId = 1081;

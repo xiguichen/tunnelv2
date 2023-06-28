@@ -4,11 +4,7 @@ using LoadBalancer;
 
 List<string> WsServerList = new()
 {
-    "https://billion-branch-basics-dg.trycloudflare.com/TcpHub",
-    "https://gm-risk-lf-declaration.trycloudflare.comTcpHub",
-    "https://routines-restaurant-df-driver.trycloudflare.comTcpHub",
-    "https://bench-accessed-canvas-declare.trycloudflare.comTcpHub",
-    "https://bachelor-stages-solely-ad.trycloudflare.comTcpHub"
+    "https://raised-invasion-volunteer-offers.trycloudflare.com/TcpHub",
 };
-Server server = new(WsServerList, 10);
+Server server = new(WsServerList, 40);
 await server.Run(CancellationToken.None);
