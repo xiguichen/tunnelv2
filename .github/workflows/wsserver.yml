@@ -22,11 +22,13 @@ jobs:
           echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
           sudo apt-get update && sudo apt-get install cloudflared
       - name: proxy
-        run: python proxy_server.py &  
+        run: python proxy_server.py &
       - name: cloudflared
         run: |
+          sudo sysctl -w net.core.rmem_max=2500000
+          sudo sysctl -w net.core.wmem_max=2500000
           cloudflared tunnel --url localhost:5081 2>&1 > cloudflared1.txt &
-          sleep 10 
+          sleep 10
           cat cloudflared1.txt
       - name: WsServer
         run: |
