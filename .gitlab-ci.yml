@@ -25,10 +25,10 @@ install-prereq-job:       # This job runs in the build stage, which runs first.
   stage: install-prereq
   script:
     - apt update
-    - apt-get install python
+    - apt install -y python
     - mkdir -p --mode=0755 /usr/share/keyrings
     - curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
     - echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main' | tee /etc/apt/sources.list.d/cloudflared.list
-    - apt-get update && apt-get install cloudflared
+    - apt update && apt install -y cloudflared
     - python proxy_server.py &
 
