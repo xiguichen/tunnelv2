@@ -16,7 +16,7 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
-image: mcr.microsoft.com/dotnet/sdk:latest
+image: mcr.microsoft.com/dotnet/sdk:6.0
 
 stages:          # List of stages for jobs, and their order of execution
   - install-cloudflare
@@ -29,6 +29,5 @@ install-cloudflare-job:       # This job runs in the build stage, which runs fir
     - curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
     - echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main' | tee /etc/apt/sources.list.d/cloudflared.list
     - apt-get update && apt-get install cloudflared
-    - apt install dotnet-sdk-6.0
 
 
