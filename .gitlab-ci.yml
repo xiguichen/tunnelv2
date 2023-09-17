@@ -19,15 +19,22 @@
 image: mcr.microsoft.com/dotnet/sdk:6.0
 
 stages:          # List of stages for jobs, and their order of execution
-  - install-cloudflare
+  - install-prereq
+  - start-proxy
 
-install-cloudflare-job:       # This job runs in the build stage, which runs first.
-  stage: install-cloudflare
+install-prereq-job:       # This job runs in the build stage, which runs first.
+  stage: install-prereq
   script:
     - apt update
     - mkdir -p --mode=0755 /usr/share/keyrings
     - curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
     - echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main' | tee /etc/apt/sources.list.d/cloudflared.list
     - apt-get update && apt-get install cloudflared
+    - sysctl -w net.core.rmem_max=2500000
+    - sysctl -w net.core.wmem_max=2500000
 
+start-proxy-job:
+  stage: start-proxy
+  script: 
+    - python proxy_server.py &
 
