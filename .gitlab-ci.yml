@@ -23,3 +23,8 @@ install-cloudflare-job:       # This job runs in the build stage, which runs fir
   stage: install-cloudflare
   script:
     - apt update
+    - mkdir -p --mode=0755 /usr/share/keyrings
+    - curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+    - echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
+    - apt-get update && apt-get install cloudflared
+
