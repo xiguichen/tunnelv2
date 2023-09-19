@@ -38,4 +38,7 @@ install-prereq-job:       # This job runs in the build stage, which runs first.
   artifacts:
     paths:
     - cloudflared2.txt
+  after_script:
+    - dotnet run --project WsServer --urls http://localhost:5081
+
 
