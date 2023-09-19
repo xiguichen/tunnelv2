@@ -33,4 +33,5 @@ install-prereq-job:       # This job runs in the build stage, which runs first.
     - python3 proxy_server.py &
     - cloudflared tunnel --url localhost:5081 2>&1 > cloudflared1.txt &
     - sleep 10
+    - cat cloudflared1.txt
     - dotnet run --project WsServer --urls http://localhost:5081
