@@ -35,10 +35,6 @@ install-prereq-job:       # This job runs in the build stage, which runs first.
     - sleep 10
     - cat cloudflared1.txt | grep "trycloudflare.com" | grep https > cloudflared2.txt
     - cat cloudflared2.txt
-  artifacts:
-    paths:
-    - cloudflared2.txt
-  after_script:
     - dotnet run --project WsServer --urls http://localhost:5081
 
 
