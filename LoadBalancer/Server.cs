@@ -7,11 +7,10 @@ using Microsoft.AspNetCore.SignalR.Client;
 internal class Server
 {
 
-
-    public Server(IList<string> WsServerList, int connectionPerServer)
+    public Server(IList<string> wsServerList, int connectionPerServer)
     {
         this.connectionsPerServer = connectionPerServer;
-        this.WsServerList = WsServerList;
+        this.WsServerList = wsServerList;
         this.hubConnections = new List<HubConnection>();
     }
 
@@ -26,7 +25,7 @@ internal class Server
         {
             for (var i = 0; i < this.connectionsPerServer; i++)
             {
-                var hubConnection = CreateHubConnection(url);
+                var hubConnection = CreateHubConnection(url + "/TcpHub");
                 _ = hubConnection.On<string, byte[]>("Data", async (connectionId, bytes) =>
                 {
                     Console.WriteLine($"WS -> Tcp (Data); ConnectionId: {connectionId}; Length={bytes.Length}");
@@ -115,6 +114,7 @@ internal class Server
     {
         Random random = new();
         var i = random.Next(this.WsServerList.Count * this.connectionsPerServer);
+        Console.WriteLine($"i: {i}");
         return this.hubConnections[i];
     }
 
