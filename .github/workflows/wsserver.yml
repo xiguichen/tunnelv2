@@ -29,7 +29,9 @@ jobs:
           sudo sysctl -w net.core.wmem_max=2500000
           cloudflared tunnel --url localhost:5081 2>&1 > cloudflared1.txt &
           sleep 10
-          cat cloudflared1.txt
+          cat cloudflared1.txt | grep "https://.*.trycloudflare.com" | sed 's/.*\(https:\/\/.*.trycloudflare.com\).*/\1/' > cloudflared2.txt
+          cat cloudflared2.txt
+
       - name: WsServer
         run: |
           dotnet run --project WsServer --urls http://localhost:5081
